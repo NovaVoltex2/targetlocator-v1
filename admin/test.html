@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+		integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+	<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+		integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+	<link rel="stylesheet" href="style.css">
+	<link rel="shortcut icon" href="./Asset 1@logo.png" type="image/x-icon">
+	<title>Document</title>
+</head>
+
+<body>
+	<header>
+		<h2>Target's Board</h2>
+	</header>
+	<main>
+		<aside id="map">
+			<h3>no data to display</h3>
+		</aside>
+		<section id="info">
+			<h3>targets information</h3>
+			<div class="container">
+				<div class="item">
+					<p>latitude:</p>
+					<em class="lat">----</em>
+				</div>
+				<div class="item">
+					<p>longitudes:</p>
+					<em class="long">----</em>
+				</div>
+				<div class="item">
+					<p>ip address:</p>
+					<em class="ip_addr">----</em>
+				</div>
+				<div class="item">
+					<p>device_name:</p>
+					<em class="div_nam">----</em>
+				</div>
+				<div class="item">
+					<p>device_platform:</p>
+					<em class="plat">----</em>
+				</div>
+			</div>
+		</section>
+		<section id="create">
+			<h3>create a new link</h3>
+			<div>
+				<label for="linkin">embedded link</label>
+				<textarea name="linkin" id="linkin" cols="40" rows="10"
+					placeholder="enter your embedded link her..."></textarea>
+			</div>
+			<div class="newlink">
+				<span class="link">new embedded link:</span><br />
+				<div class="link_context">
+					<a href="
+					" class="newlink"
+						title="share link">
+					</a>
+					<button onclick="copyText()">copy link</button>
+				</div>
+			</div>
+		</section>
+	</main>
+	<script src="app.js" defer></script>
+</body>
+<script>
+	const lat = document.querySelector(".lat")
+	const long = document.querySelector(".long")
+	const ip_addr = document.querySelector(".ip_addr")
+	const div_nam = document.querySelector(".div_nam")
+	const plat = document.querySelector(".plat")
+
+
+	fetch("../locations.json").then(res => res.json()).then(data => {
+		lat.textContent = data.lat
+		long.textContent = data.long
+		div_nam.textContent = data.machineName
+		plat.textContent = data.platform
+		ip_addr.textContent = data.ipaddres
+
+		var map = L.map('map').setView([data.lat, data.long], 13);
+		L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+			maxZoom: 19,
+			attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+		}).addTo(map);
+		var marker = L.marker([data.lat, data.long]).addTo(map);
+		var popup = L.popup()
+			.setLatLng([data.lat, data.long])
+			.setContent("I am a standalone popup.")
+			.openOn(map);
+	})
+</script>
+
+</html>
